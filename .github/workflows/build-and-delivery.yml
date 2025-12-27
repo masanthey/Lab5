@@ -1,16 +1,13 @@
+# .github/workflows/build-and-delivery.yml
 name: Build and Delivery
 
 on:
-  workflow_run:
-    workflows: ["Test Python App"]
-    types:
-      - completed
+  push:
     branches: [main]
 
 jobs:
   cd:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-  uses: docker/build-push-action@v6
-  with:
-    push: true
-    tags: ${{ vars.DOCKERHUB_USERNAME }}/my-app:latest
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/my-app:latest
